@@ -1,5 +1,6 @@
 package com.example.bmorris.criminalintent;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Layout;
@@ -35,7 +36,12 @@ public class CrimeListFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         Crime c = ((CrimeAdapter)getListAdapter()).getItem(position);
-        Log.d(TAG, c.getTitle() + " was clicked");
+        //Log.d(TAG, c.getTitle() + " was clicked");
+
+        //Start CrimePagerActivity with this crime
+        Intent i = new Intent(getActivity(), CrimePagerActivity.class);
+        i.putExtra(CrimeFragment.EXTRA_CRIME_ID, c.getId());
+        startActivity(i);
     }
 
     private class CrimeAdapter extends ArrayAdapter<Crime> {
@@ -62,5 +68,11 @@ public class CrimeListFragment extends ListFragment {
 
             return convertView;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((CrimeAdapter)getListAdapter()).notifyDataSetChanged();
     }
 }
