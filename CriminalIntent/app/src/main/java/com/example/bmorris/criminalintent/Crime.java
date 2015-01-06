@@ -1,5 +1,7 @@
 package com.example.bmorris.criminalintent;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,8 +14,10 @@ import java.util.UUID;
 public class Crime {
     private static final String JSON_ID = "id";
     private static final String JSON_TITLE = "title";
-    private static final String JSON_SOLVED = "title";
-    private static final String JSON_DATE = "title";
+    private static final String JSON_SOLVED = "solved";
+    private static final String JSON_DATE = "date";
+
+    private static final String TAG = "crime.java";
 
     private UUID mId;
     private String mTitle;
@@ -24,6 +28,15 @@ public class Crime {
         //Generate unique identifier
         mId = UUID.randomUUID();
         mDate = new Date();
+    }
+
+    public Crime(JSONObject json) throws JSONException {
+        mId = UUID.fromString(json.getString(JSON_ID));
+        if(json.has(JSON_TITLE)) {
+            mTitle = json.getString(JSON_TITLE);
+        }
+        mSolved = json.getBoolean(JSON_SOLVED);
+        mDate = new Date(json.getLong(JSON_DATE));
     }
 
     public JSONObject toJSON() throws JSONException {

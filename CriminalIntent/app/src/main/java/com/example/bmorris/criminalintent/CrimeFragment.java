@@ -70,12 +70,13 @@ public class CrimeFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mCrime.setTitle(mCrime.toString());
+                mCrime.setTitle(s.toString());
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 //Intentionally left blank
+                //mCrime.setTitle(mCrime.toString());
             }
         });
 
@@ -135,6 +136,12 @@ public class CrimeFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        CrimeLab.get(getActivity()).saveCrimes();
     }
 
 }
