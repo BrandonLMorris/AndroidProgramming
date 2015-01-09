@@ -58,13 +58,7 @@ public class QuizActivity extends ActionBarActivity {
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(data == null) {
-            return;
-        }
-        mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +121,7 @@ public class QuizActivity extends ActionBarActivity {
                 Intent i = new Intent(QuizActivity.this, CheatActivity.class);
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
                 i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE, answerIsTrue);
+                //Starts activity with request code 0, onActivityResult gets called when returns
                 startActivityForResult(i, 0);
             }
         });
@@ -139,6 +134,16 @@ public class QuizActivity extends ActionBarActivity {
 
     }
 
+    //Called when activity is run in response to an intent, of interest when returning from cheating
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(data == null) {
+            return;
+        }
+        mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
+    }
+
+    //Saves quiz index when changing state (rotating)
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
@@ -146,6 +151,7 @@ public class QuizActivity extends ActionBarActivity {
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
     }
 
+    //Template options menu creation
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

@@ -6,6 +6,8 @@ import android.view.Window;
 import android.view.WindowManager;
 
 /**
+ * Activity that holds the camera picture-taking page
+ * Standard pattern: holds a single fragment where all the real work is done
  * Created by bmorris on 1/6/15.
  */
 public class CrimeCameraActivity extends SingleFragmentActivity {

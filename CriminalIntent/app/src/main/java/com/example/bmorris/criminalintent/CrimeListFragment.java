@@ -30,8 +30,10 @@ import java.util.ArrayList;
  */
 public class CrimeListFragment extends ListFragment {
 
+    //Tag for debugging
     private static final String TAG = "CrimeListFragment";
 
+    //private fields
     private ArrayList<Crime> mCrimes;
     private boolean mSubtitleVisible;
     private Callbacks mCallbacks;
@@ -41,6 +43,7 @@ public class CrimeListFragment extends ListFragment {
         void onCrimeSelected(Crime crime);
     }
 
+    //Sets the callbacks instance when the fragment is de/attached
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -58,13 +61,20 @@ public class CrimeListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        //Sets the action bar title to inform user what fragment they're in
         getActivity().setTitle(R.string.crimes_title);
+
+        //Gets the list of crimes
         mCrimes = CrimeLab.get(getActivity()).getCrimes();
 
+        //Creates the adapter
         CrimeAdapter adapter = new CrimeAdapter(mCrimes);
         setListAdapter(adapter);
 
+        //Retrains instance for screen rotation
         setRetainInstance(true);
+
+        //default value for subtitle view
         mSubtitleVisible = false;
     }
 
@@ -74,6 +84,7 @@ public class CrimeListFragment extends ListFragment {
         mCallbacks.onCrimeSelected(c);
     }
 
+    //Subclass of adapter for arrays used to list the crimes
     private class CrimeAdapter extends ArrayAdapter<Crime> {
         public CrimeAdapter(ArrayList<Crime> crimes) {
             super(getActivity(), 0, crimes);
@@ -89,6 +100,7 @@ public class CrimeListFragment extends ListFragment {
             //Configure the view for this crime
             Crime c = getItem(position);
 
+            //Finds the views and sets their values to the crime's
             TextView titleTextView = (TextView)convertView.findViewById(R.id.crime_list_item_titleTextView);
             titleTextView.setText(c.getTitle());
             TextView dateTextView = (TextView)convertView.findViewById(R.id.crime_list_item_dateTextView);
@@ -100,12 +112,14 @@ public class CrimeListFragment extends ListFragment {
         }
     }
 
+    //Resets the dataset whenever the fragment comes back into view
     @Override
     public void onResume() {
         super.onResume();
         ((CrimeAdapter)getListAdapter()).notifyDataSetChanged();
     }
 
+    //Sets up the options menu
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -116,6 +130,7 @@ public class CrimeListFragment extends ListFragment {
         }
     }
 
+    //Response to option being selected
     @TargetApi(11)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -142,11 +157,13 @@ public class CrimeListFragment extends ListFragment {
         }
     }
 
+    //Sets up context menu
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         getActivity().getMenuInflater().inflate(R.menu.crime_list_item_context, menu);
     }
 
+    //Responds to context menu selection
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
@@ -168,12 +185,14 @@ public class CrimeListFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, parent, savedInstanceState);
 
+        //Subtitle if set and post-honeycomb
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             if(mSubtitleVisible) {
                 getActivity().getActionBar().setSubtitle(R.string.subtitle);
             }
         }
 
+        //Grabs refference to the listview
         ListView listView = (ListView)v.findViewById(android.R.id.list);
 
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -227,6 +246,7 @@ public class CrimeListFragment extends ListFragment {
         return v;
     }
 
+    //Tells the adapter to update data set
     public void updateUI() {
         ((CrimeAdapter)getListAdapter()).notifyDataSetChanged();
     }

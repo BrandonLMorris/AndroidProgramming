@@ -9,9 +9,14 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
+ * Model class for the individual crimes
  * Created by bmorris on 1/3/15.
  */
 public class Crime {
+    //Tag for debugging
+    private static final String TAG = "crime.java";
+
+    //String constants for JSON serialization
     private static final String JSON_ID = "id";
     private static final String JSON_TITLE = "title";
     private static final String JSON_SOLVED = "solved";
@@ -19,8 +24,8 @@ public class Crime {
     private static final String JSON_PHOTO = "photo";
     private static final String JSON_SUSPECT = "suspect";
 
-    private static final String TAG = "crime.java";
 
+    //Crime fields
     private UUID mId;
     private String mTitle;
     private Date mDate;
@@ -28,12 +33,14 @@ public class Crime {
     private Photo mPhoto;
     private String mSuspect;
 
+    //Constructor from not-JSON
     public Crime() {
         //Generate unique identifier
         mId = UUID.randomUUID();
         mDate = new Date();
     }
 
+    //Constructor from a JSON object
     public Crime(JSONObject json) throws JSONException {
         mId = UUID.fromString(json.getString(JSON_ID));
         if(json.has(JSON_TITLE)) {
@@ -47,6 +54,7 @@ public class Crime {
             mSuspect = json.getString(JSON_SUSPECT);
     }
 
+    //Serializes object to JSON
     public JSONObject toJSON() throws JSONException {
         JSONObject json = new JSONObject();
         json.put(JSON_ID, mId.toString());

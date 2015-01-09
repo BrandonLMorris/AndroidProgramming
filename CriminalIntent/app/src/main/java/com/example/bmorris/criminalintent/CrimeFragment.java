@@ -37,16 +37,23 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
+ * Fragment that displays the detail view of the crime
  * Created by bmorris on 1/4/15.
  */
 public class CrimeFragment extends Fragment {
+    //Tag for debugging
     public static final String TAG = "CrimeFragment";
+
+    //String constant for intent extra
     public static final String EXTRA_CRIME_ID = "com.example.android.criminalintent.crime_id";
+
+    //String constant
     public static final String DIALOG_DATE = "date";
     public static final int REQUEST_DATE = 0;
     public static final int REQUEST_PHOTO = 1;
     public static final int REQUEST_CONTACT = 2;
 
+    //Member fields
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
@@ -57,23 +64,26 @@ public class CrimeFragment extends Fragment {
     private Button mSuspectButton;
     private Callbacks mCallbacks;
 
-    //Required interface for hosting activites
+    //Required interface for hosting activities
     public interface Callbacks {
         void onCrimeUpdated(Crime crime);
     }
 
+    //Sets the callbacks for the activity when fragment attatched to the activity
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mCallbacks = (Callbacks)activity;
     }
 
+    //Gets rid of the callbacks when activity's detached
     @Override
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
     }
 
+    //Standard onCreate, sets up the instance of the crime and option menu
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,21 +93,25 @@ public class CrimeFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    //Updates the date of the date button to the crime's date
     private void updateDate() {
         mDateButton.setText(mCrime.getDate().toString());
     }
 
+    //Standard onCreateView, sets up layout
     @TargetApi(11)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_crime, parent, false);
 
+        //Sets the home button on the activity bar if post-Honeycomb
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             if(NavUtils.getParentActivityName(getActivity()) != null){
                 getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
             }
         }
 
+        //Text field of crime's name
         mTitleField = (EditText)v.findViewById(R.id.crime_title);
         mTitleField.setText(mCrime.getTitle());
         mTitleField.addTextChangedListener(new TextWatcher() {
@@ -106,6 +120,7 @@ public class CrimeFragment extends Fragment {
                 //This Space intentionally left blank
             }
 
+            //Updates the crime's title to the text edit value
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mCrime.setTitle(s.toString());
@@ -120,6 +135,7 @@ public class CrimeFragment extends Fragment {
             }
         });
 
+        //Sets up the date button
         mDateButton = (Button)v.findViewById(R.id.crime_date);
         updateDate();
         mDateButton.setOnClickListener(new View.OnClickListener() {
@@ -132,6 +148,7 @@ public class CrimeFragment extends Fragment {
             }
         });
 
+        //Checkbox for the crime's solved status
         mSolvedCheckBox = (CheckBox)v.findViewById(R.id.crime_solved);
         mSolvedCheckBox.setChecked(mCrime.isSolved());
         mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -143,6 +160,7 @@ public class CrimeFragment extends Fragment {
             }
         });
 
+        //Photo button/image associated with the crime
         mPhotoButton = (ImageButton)v.findViewById(R.id.crime_imageButton);
         mPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,6 +193,7 @@ public class CrimeFragment extends Fragment {
             mPhotoButton.setEnabled(false);
         }
 
+        //Button to send the crime report
         Button reportButton = (Button)v.findViewById(R.id.crime_reportButton);
         reportButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -187,6 +206,7 @@ public class CrimeFragment extends Fragment {
             }
         });
 
+        //Button to select a suspect from the contacts
         mSuspectButton = (Button)v.findViewById(R.id.crime_suspectButton);
         mSuspectButton.setOnClickListener(new View.OnClickListener() {
             @Override

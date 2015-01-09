@@ -22,17 +22,26 @@ import java.util.List;
 import java.util.UUID;
 
 /**
+ * Fragment for picture-taking
+ * Hosted by CrimeCameraActivity
+ * Camera technique here is OUTDATED
+ * Avoiding the (at the time) buggy camera API
+ *
  * Created by bmorris on 1/6/15.
  */
 public class CrimeCameraFragment extends Fragment {
+    //Tag for debugging
     private static final String TAG = "CrimeCameraFragment";
 
+    //String constant for identifying the photo filename in the intent
     public static final String EXTRA_PHOTO_FILENAME = "com.example.bmorris.criminalintent.photo_filename";
 
+    //Member fields
     private Camera mCamera;
     private SurfaceView mSurfaceView;
     private View mProgressContainer;
 
+    //Hold the callbacks
     private Camera.ShutterCallback mShutterCallback;
     private Camera.PictureCallback mJpegCallback;
 
@@ -41,6 +50,7 @@ public class CrimeCameraFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_crime_camera, parent, false);
 
+        //Button instance and listener
         Button takePictureButton = (Button)v.findViewById(R.id.crime_camera_takePictureButton);
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -50,12 +60,14 @@ public class CrimeCameraFragment extends Fragment {
             }
         });
 
+        //SurfaceView that holds the camera's preview (DEPRECATED)
         mSurfaceView = (SurfaceView)v.findViewById(R.id.crime_camera_surfaceView);
         SurfaceHolder holder = mSurfaceView.getHolder();
         //setType() and SURFACE_TYPE_PUSH_BUFFERS are both deprecated,
         //but are required for Camera preview to work on pre-3.0 devices.
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
+        //Callback methods
         holder.addCallback(new SurfaceHolder.Callback() {
 
             public void surfaceCreated(SurfaceHolder holder) {
@@ -94,17 +106,20 @@ public class CrimeCameraFragment extends Fragment {
             }
         });
 
+        //Progress indicator to display when the photo is being saved
         mProgressContainer = v.findViewById(R.id.crime_camera_progressContainer);
         mProgressContainer.setVisibility(View.INVISIBLE);
 
-         Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
+        //Runs when the picture is taken
+        mShutterCallback = new Camera.ShutterCallback() {
             public void onShutter() {
                 //Display the progress indicator
                 mProgressContainer.setVisibility(View.VISIBLE);
             }
         };
 
-         Camera.PictureCallback mJpegCallback = new Camera.PictureCallback() {
+        //Runs to save the picture
+        mJpegCallback = new Camera.PictureCallback() {
             public void onPictureTaken(byte[] data, Camera camera) {
                 //Create the filename
                 String filename = UUID.randomUUID().toString() + ".jpg";
@@ -143,6 +158,7 @@ public class CrimeCameraFragment extends Fragment {
         return v;
     }
 
+    //Pulls up the camera when the fragment becomes visible to the user
     @TargetApi(9)
     @Override
     public void onResume() {
@@ -154,6 +170,7 @@ public class CrimeCameraFragment extends Fragment {
         }
     }
 
+    //Gets rid of the camera as soon as the fragment is no longer visible to the user
     @Override
     public void onPause() {
         super.onPause();
