@@ -6,21 +6,26 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 /**
+ * Activity that hosts the crime list fragment
+ * Launcher activity
  * Created by bmorris on 1/5/15.
  */
 public class CrimeListActivity extends SingleFragmentActivity implements CrimeListFragment.Callbacks, CrimeFragment.Callbacks {
 
+    //Tells the CrimeListFragment to update UI to match crime's update
     public void onCrimeUpdated(Crime crime) {
         FragmentManager fm = getSupportFragmentManager();
         CrimeListFragment listFragment = (CrimeListFragment)fm.findFragmentById(R.id.fragmentContainer);
         listFragment.updateUI();
     }
 
+    //Returns the CrimeListFragment (default fragment for default activity)
     @Override
     protected Fragment createFragment() {
         return new CrimeListFragment();
     }
 
+    //Provides the master-detail layout for the onCreate method's setContentView() (defined in SingleFragmentActivity)
     @Override
     protected int getLayoutResId() {
         return R.layout.activity_masterdetail;
@@ -32,7 +37,7 @@ public class CrimeListActivity extends SingleFragmentActivity implements CrimeLi
             Intent i = new Intent(this, CrimePagerActivity.class);
             i.putExtra(CrimeFragment.EXTRA_CRIME_ID, crime.getId());
             startActivity(i);
-        } else {
+        } else { //below only runs if on larger screen (tablet) utilizing master-detail side-by-side
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
 

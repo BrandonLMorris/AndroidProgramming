@@ -26,6 +26,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
+ * Fragment that displays the list of crimes the user
+ * Default fragment on launcher activity
  * Created by bmorris on 1/5/15.
  */
 public class CrimeListFragment extends ListFragment {
@@ -112,7 +114,7 @@ public class CrimeListFragment extends ListFragment {
         }
     }
 
-    //Resets the dataset whenever the fragment comes back into view
+    //Resets the data set whenever the fragment comes back into view
     @Override
     public void onResume() {
         super.onResume();

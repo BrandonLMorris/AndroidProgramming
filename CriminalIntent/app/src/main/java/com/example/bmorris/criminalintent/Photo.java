@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
+ * Photo class used to represent the photo of the crime
  * Created by bmorris on 1/6/15.
  */
 public class Photo {

@@ -15,14 +15,17 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
+ * Fragment for selecting the date upon pressing the Date button (on detail view)
  * Created by bmorris on 1/5/15.
  */
 public class DatePickerFragment extends DialogFragment {
+    //String constant to identify date extra in intent
     public static final String EXTRA_DATE = "com.example.android.criminalintent.date";
 
     private Date mDate;
 
-    public static DatePickerFragment newinstance(Date date) {
+    //Creates an instance of the date picker dialog with the passed in date selected
+    public static DatePickerFragment newInstance(Date date) {
         Bundle args = new Bundle();
         args.putSerializable(EXTRA_DATE, date);
 
@@ -32,6 +35,7 @@ public class DatePickerFragment extends DialogFragment {
         return fragment;
     }
 
+    //Creates the date dialog and returns the date
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         mDate = (Date)getArguments().getSerializable(EXTRA_DATE);
@@ -69,6 +73,7 @@ public class DatePickerFragment extends DialogFragment {
                 .create();
     }
 
+    //helper method used above to send date back to activity via intent extra
     private void sendResult(int resultCode) {
         if(getTargetFragment() == null)
             return;

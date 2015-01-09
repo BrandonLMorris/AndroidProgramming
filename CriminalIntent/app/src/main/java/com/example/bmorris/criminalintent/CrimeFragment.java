@@ -139,10 +139,13 @@ public class CrimeFragment extends Fragment {
         mDateButton = (Button)v.findViewById(R.id.crime_date);
         updateDate();
         mDateButton.setOnClickListener(new View.OnClickListener() {
+            //Gets an instance of the date picker dialog (with crime's date the default),
+            //puts it over the CrimeFragment requesting the date,
+            //when through, date gets passed back through onActivityResult and button is updated
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
-                DatePickerFragment dialog = DatePickerFragment.newinstance(mCrime.getDate());
+                DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
                 dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
                 dialog.show(fm, DIALOG_DATE);
             }

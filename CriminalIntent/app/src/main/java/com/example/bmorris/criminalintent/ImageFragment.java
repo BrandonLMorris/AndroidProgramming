@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 /**
+ * Fragment used to display a crime's image on top of CrimeFragment
  * Created by bmorris on 1/6/15.
  */
 public class ImageFragment extends DialogFragment {

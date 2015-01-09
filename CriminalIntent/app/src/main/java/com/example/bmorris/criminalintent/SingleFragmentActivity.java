@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 /**
+ * Abstract class used for activities that host a single fragment on the screen
  * Created by bmorris on 1/5/15.
  */
 public abstract class SingleFragmentActivity extends FragmentActivity {

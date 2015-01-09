@@ -18,6 +18,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 
 /**
+ * Custom serializer for converting Crime objects to JSON objects
  * Created by bmorris on 1/6/15.
  */
 public class CriminalIntentJSONSerializer {
@@ -29,6 +30,7 @@ public class CriminalIntentJSONSerializer {
         mFilename = f;
     }
 
+    //Builds JSON array and saves to disk/file
     public void saveCrimes(ArrayList<Crime> crimes) throws JSONException, IOException {
         //Build an array in JSON
         JSONArray array = new JSONArray();
@@ -47,6 +49,7 @@ public class CriminalIntentJSONSerializer {
         }
     }
 
+    //Pulls JSON array from disk file and converts back to list of Crimes
     public ArrayList<Crime> loadCrimes() throws IOException, JSONException {
         ArrayList<Crime> crimes = new ArrayList<Crime>();
         BufferedReader reader = null;

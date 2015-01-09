@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 /**
+ * Hosts fragment for detail view of crime (CrimeFragment)
+ * Uses ViewPager to enable swipes between crimes
  * Created by bmorris on 1/5/15.
  */
 public class CrimePagerActivity extends FragmentActivity implements CrimeFragment.Callbacks {
@@ -27,8 +29,10 @@ public class CrimePagerActivity extends FragmentActivity implements CrimeFragmen
         mViewPager.setId(R.id.viewPager);
         setContentView(mViewPager);
 
+        //Retrieves list of crimes
         mCrimes = CrimeLab.get(this).getCrimes();
 
+        //Sets up adapter ViewPager
         FragmentManager fm = getSupportFragmentManager();
         mViewPager.setAdapter(new FragmentStatePagerAdapter(fm) {
             @Override
@@ -43,6 +47,7 @@ public class CrimePagerActivity extends FragmentActivity implements CrimeFragmen
             }
         });
 
+        //Listener to change pages (crimes) upon swipe
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {}
             public void onPageScrolled(int pos, float posOffset, int posOffsetPixels) {}

@@ -8,6 +8,7 @@ import android.view.Display;
 import android.widget.ImageView;
 
 /**
+ * Some helper methods used to scale image and recycle for memory when done previewing
  * Created by bmorris on 1/6/15.
  */
 public class PictureUtils {
