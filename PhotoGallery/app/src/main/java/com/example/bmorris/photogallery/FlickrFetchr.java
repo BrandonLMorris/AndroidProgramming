@@ -16,23 +16,29 @@ import java.net.URL;
 import java.util.ArrayList;
 
 /**
+ * Handles the networking and querying of Flickr
  * Created by bmorris on 1/7/15.
  */
 public class FlickrFetchr {
+    //Tag for debugging
     public static final String TAG = "FlickrFetchr";
+    //String constant for saving the query and last result
     public static final String PREF_SEARCH_QUERY = "searchQuery";
     public static final String PREF_LAST_RESULT_ID = "lastResultId";
 
+    //String constants for photo retrieval
     private static final String ENDPOINT = "https://api.flickr.com/services/rest/";
-    private static final String API_KEY = "b078ed2216f8366151248369c47ce4a1";
+    private static final String API_KEY = "b078ed2216f8366151248369c47ce4a1"; //Get your own!
     private static final String METHOD_GET_RECENT = "flickr.photos.getRecent";
     private static final String METHOD_SEARCH = "flickr.photos.search";
     private static final String PARAM_EXTRAS = "extras";
     private static final String PARAM_TEXT = "text";
 
+    //Other string constants
     private static final String EXTRA_SMALL_URL = "url_s";
     private static final String XML_PHOTO = "photo";
 
+    //Fetches raw data from url
     byte[] getUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -55,12 +61,33 @@ public class FlickrFetchr {
         } finally {
             connection.disconnect();
         }
+        /*
+        Explanation:
+        Creates URL object frm a string
+        openConnection() to create a connection at the URL
+        Above returns URLConnection, casted to a HttpURLConnection
+        Connection not actually opened until getInputStream() (or getOutputStream()) called
+        Continuously read from connection until there ain't no more data
+        Close connection and return ByteArrayOutputStream as byte array
+         */
     }
 
+    //Converts result from getUrlBytes(String) to a String
     public String getUrl(String urlSpec) throws IOException {
         return new String(getUrlBytes(urlSpec));
     }
 
+    //Sends the API request and calls donwloadGalleryItems to get the pictures
+    public ArrayList<GalleryItem> fetchItems() {
+        String url = Uri.parse(ENDPOINT).buildUpon()
+                .appendQueryParameter("method", METHOD_GET_RECENT)
+                .appendQueryParameter("api_key", API_KEY)
+                .appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
+                .build().toString();
+        return downloadGalleryItems(url);
+    }
+
+    //Gets the xml from the API request, sets up a parser, and calls parseItems() to store in ArrayList
     public ArrayList<GalleryItem> downloadGalleryItems(String url) {
         ArrayList<GalleryItem> items = new ArrayList<GalleryItem>();
         try {
@@ -79,25 +106,7 @@ public class FlickrFetchr {
         return items;
     }
 
-    public ArrayList<GalleryItem> fetchItems() {
-        String url = Uri.parse(ENDPOINT).buildUpon()
-                .appendQueryParameter("method", METHOD_GET_RECENT)
-                .appendQueryParameter("api_key", API_KEY)
-                .appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
-                .build().toString();
-        return downloadGalleryItems(url);
-    }
-
-    public ArrayList<GalleryItem> search(String query) {
-        String url = Uri.parse(ENDPOINT).buildUpon()
-                .appendQueryParameter("method", METHOD_SEARCH)
-                .appendQueryParameter("api_key", API_KEY)
-                .appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
-                .appendQueryParameter(PARAM_TEXT, query)
-                .build().toString();
-        return downloadGalleryItems(url);
-    }
-
+    //Fills in the ArrayList from items parsed through the parser
     public void parseItems(ArrayList<GalleryItem> items, XmlPullParser parser) throws XmlPullParserException, IOException {
         int eventType = parser.next();
 
@@ -120,4 +129,28 @@ public class FlickrFetchr {
         }
     }
 
+    public ArrayList<GalleryItem> search(String query) {
+        String url = Uri.parse(ENDPOINT).buildUpon()
+                .appendQueryParameter("method", METHOD_SEARCH)
+                .appendQueryParameter("api_key", API_KEY)
+                .appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
+                .appendQueryParameter(PARAM_TEXT, query)
+                .build().toString();
+        return downloadGalleryItems(url);
+    }
+
 }
+
+/**
+ * To load gallery:
+ * PhotoGalleryFragment calls updateItems() in onCreate(Bundle)
+ * updateItems() executes FetchItemsTask {{AsyncTask subclass}}
+ * FetchItemsTask calls FlickrFetcher.fetchItems()
+ * fetchItems() creates url with API request, calls downloadGalleryItems() with url
+ * donwloadGalleryItems gets an XML string by calling getUrl()
+ * (getUrl() converts the byte array from getUrl to an XML string)
+ * downloadGalleryItems then creates an XmlPullParser from a factory, and sets the XML string as the input
+ * downloadGalleryItems then calls parseItems to fill the ArrayList of GalleryItems
+ * pareItems goes through each appropriate XML tag and pulls the data to create GalleryItem object, puts into ArrayList
+ *      <<Seems confusing, don't it?>>
+ */

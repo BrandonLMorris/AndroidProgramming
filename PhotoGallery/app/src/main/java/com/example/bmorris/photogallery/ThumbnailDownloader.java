@@ -16,30 +16,37 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Dedicated class to take care of downloading of the individual thumbnails of the photos
+ * A subclass of HandlerThread, ThumbnailDownloader is a message loop consisting of its
+ * own dedicated thread and a looper from HandlerThread
  * Created by bmorris on 1/7/15.
  */
+//Generic argument Token is the type of object to identify each download
 public class ThumbnailDownloader<Token> extends HandlerThread {
+    //String constant for debug
     private static final String TAG = "ThumbnailDownloader";
+    //the what constant for the Messages
     private static final int MESSAGE_DOWNLOAD = 0;
 
+    //Handler reference for this thread
     Handler mHandler;
+    //Synchronized map for each url to its image
     Map<Token, String> requestMap = Collections.synchronizedMap(new HashMap<Token, String>());
+    //Reference to the response handler passed in from the main thread
     Handler mResponseHandler;
     Listener<Token> mListener;
 
-    public interface Listener<Token> {
-        void onThumbnailDownloaded(Token token, Bitmap thumbnail);
+    //Constructor that accepts a handler (from the main thread for UI update)
+    public ThumbnailDownloader(Handler responseHandler) {
+        super(TAG);
+        mResponseHandler = responseHandler;
     }
 
     public void setListener(Listener<Token> listener) {
         mListener = listener;
     }
 
-    public ThumbnailDownloader(Handler responseHandler) {
-        super(TAG);
-        mResponseHandler = responseHandler;
-    }
-
+    //Creates the handler when ready and defines handleMessage()
     @SuppressLint("HandlerLeak")
     @Override
     protected void onLooperPrepared() {
@@ -56,6 +63,7 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
         };
     }
 
+    //Called from the GridView adapter to create and queue the Messages for the thumbnails
     public void queueThumbnail(Token token, String url) {
         Log.i(TAG, "Got an URL: " + url);
         requestMap.put(token, url);
@@ -63,6 +71,7 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
         mHandler.obtainMessage(MESSAGE_DOWNLOAD, token).sendToTarget();
     }
 
+    //Called from handleMessage(), actually downloads the image and post()'s it back to the responseHandler
     private void handleRequest(final Token token) {
         try {
             final String url = requestMap.get(token);
@@ -84,9 +93,14 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
         }
     }
 
+    //Called in PhotoGalleryFragment's onDestroy() to prevent bad things for stuff like screen rotation
     public void clearQueue() {
         mHandler.removeMessages(MESSAGE_DOWNLOAD);
         requestMap.clear();
+    }
+
+    public interface Listener<Token> {
+        void onThumbnailDownloaded(Token token, Bitmap thumbnail);
     }
 
 }

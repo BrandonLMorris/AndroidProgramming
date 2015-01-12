@@ -50,6 +50,7 @@ public class PhotoGalleryFragment extends VisibleFragment{
 
         updateItems();
 
+        //Creates and starts the message loop to download the thumbnails
         mThumbnailThread = new ThumbnailDownloader<ImageView>(new Handler());
         mThumbnailThread.setListener(new ThumbnailDownloader.Listener<ImageView>() {
             public void onThumbnailDownloaded(ImageView imageView, Bitmap thumbnail) {
@@ -100,6 +101,7 @@ public class PhotoGalleryFragment extends VisibleFragment{
         }
     }
 
+    //Utility class that starts background thread to get the photos
     private class FetchItemsTask extends AsyncTask<Void,Void,ArrayList<GalleryItem>> {
         @Override
         protected ArrayList<GalleryItem> doInBackground(Void... params) {
@@ -107,6 +109,8 @@ public class PhotoGalleryFragment extends VisibleFragment{
             if(activity == null)
                 return new ArrayList<GalleryItem>();
 
+            //Query is the image selected to give a detial view
+            //No query if just at home page
             String query = PreferenceManager.getDefaultSharedPreferences(activity)
                     .getString(FlickrFetchr.PREF_SEARCH_QUERY, null);
             if(query != null) {
@@ -146,6 +150,8 @@ public class PhotoGalleryFragment extends VisibleFragment{
     @Override
     public void onDestroy() {
         super.onDestroy();
+        //Gets rid of the background thread when the fragment is destroyed
+        //if skipped, the thread will never die, like rock and roll
         mThumbnailThread.quit();
         Log.i(TAG, "Background thread destroyed");
     }
