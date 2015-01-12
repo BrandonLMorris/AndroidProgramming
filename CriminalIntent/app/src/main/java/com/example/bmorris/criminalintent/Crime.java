@@ -5,6 +5,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -87,6 +88,10 @@ public class Crime {
 
     public Date getDate() {
         return mDate;
+    }
+
+    public String getDateString() {
+        return new SimpleDateFormat("EEE, MMM dd, yyyy").format(mDate);
     }
 
     public void setDate(Date date) {

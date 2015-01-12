@@ -33,6 +33,7 @@ import android.widget.ImageView;
 
 import junit.runner.Version;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -95,7 +96,7 @@ public class CrimeFragment extends Fragment {
 
     //Updates the date of the date button to the crime's date
     private void updateDate() {
-        mDateButton.setText(mCrime.getDate().toString());
+        mDateButton.setText(mCrime.getDateString());
     }
 
     //Standard onCreateView, sets up layout
